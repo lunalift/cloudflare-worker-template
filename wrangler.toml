@@ -1,0 +1,9 @@
+name = "lunalift-integration"
+main = "lunalift-cloudflare-worker.js"
+compatibility_date = "2024-01-01"
+
+# No configuration needed - the worker automatically derives your LunaLift subdomain
+# from your domain (www.acme.com -> acme-com.lunalift.ai)
+
+# To deploy: npx wrangler deploy
+# Then add routes via dashboard or CLI (see README.md)
