@@ -1,0 +1,39 @@
+Copyright (c) 2025 LunaLift
+
+LUNALIFT INTEGRATION TEMPLATE LICENSE
+
+Permission is hereby granted, free of charge, to any person or organization
+obtaining a copy of this software and associated documentation files (the
+"Software"), to use the Software for the sole purpose of integrating with
+LunaLift services, subject to the following conditions:
+
+1. USE RIGHTS
+   - You may use, copy, and modify the Software for integration with LunaLift
+     services on domains you own or control
+   - You may deploy the Software to your own infrastructure
+   - You may modify the Software to suit your specific integration needs
+
+2. RESTRICTIONS
+   - You may NOT redistribute, sublicense, sell, or transfer the Software or
+     any modified versions to third parties
+   - You may NOT use the Software to create competing products or services
+   - You may NOT remove or alter any copyright notices or this license
+
+3. REQUIREMENTS
+   - Use of the Software requires an active LunaLift subscription
+   - The Software must only be used in connection with LunaLift services
+   - Any modifications must retain this license and copyright notice
+
+4. DISCLAIMER
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+   LUNALIFT BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+   AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+5. TERMINATION
+   This license automatically terminates if you violate any of these terms or
+   if your LunaLift subscription is terminated or expires.
+
+For questions about this license, contact: legal@lunalift.ai
