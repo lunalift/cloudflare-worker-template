@@ -132,18 +132,19 @@ headers.set('Cache-Control', 'public, max-age=3600, stale-while-revalidate=86400
 headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
 ```
 
-## Framework Integration
+## Alternative Integrations (Non-Cloudflare)
 
-This worker is framework-agnostic and works with:
+**Can't use Cloudflare Workers?** Check out the [examples](./examples) directory for framework-specific alternatives:
 
-- Static sites (Hugo, Jekyll, Eleventy)
-- React/Next.js
-- Vue/Nuxt
-- Svelte/SvelteKit
-- WordPress
-- Any other web framework
+- **[Next.js](./examples/nextjs/)** - Middleware-based integration
+- **[SvelteKit](./examples/sveltekit/)** - Server hooks integration
 
-For framework-specific integration guides, see the [examples](./examples) directory.
+These examples provide the same functionality using framework-native middleware/hooks instead of Cloudflare Workers. Use them if:
+- Your domain is NOT on Cloudflare
+- You prefer framework-native integration
+- You want tighter control over the integration logic
+
+**Note:** The Cloudflare Worker template (this directory) is the recommended approach for simplicity and performance if your domain is on Cloudflare.
 
 ## Troubleshooting
 
