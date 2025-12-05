@@ -28,6 +28,57 @@
  * - Use Cloudflare's Custom Domains feature (add CNAME record from your domain to your workers domain instead of routes)
  */
 
+// Extensions to ignore for analytics tracking (using Set for O(1) lookup)
+const IGNORED_EXTENSIONS = new Set([
+  '.js', '.css', '.xml', '.png', '.jpg', '.jpeg', '.gif', '.pdf',
+  '.doc', '.ico', '.rss', '.zip', '.mp3', '.rar', '.exe', '.wmv',
+  '.avi', '.ppt', '.mpg', '.mpeg', '.tif', '.wav', '.mov', '.psd',
+  '.ai', '.xls', '.mp4', '.m4a', '.swf', '.dat', '.dmg', '.iso',
+  '.flv', '.m4v', '.torrent', '.woff', '.woff2', '.ttf', '.svg',
+  '.webmanifest', '.webp', '.avif'
+]);
+
+// Paths to exclude from analytics tracking
+const EXCLUDED_PATHS = [
+  '/wp-login.php',
+  '/wp-cron.php',
+  '/wp-admin/',
+  '/.well-known/',
+  '/xmlrpc.php'
+];
+
+// Path patterns to exclude (compiled once for performance)
+const EXCLUDED_PATH_PATTERNS = [
+  /\/wp-content\/.*\.php$/,  // WordPress plugin PHP files
+  /\?.*ob=open-bridge/       // Open Bridge tracking events
+];
+
+/**
+ * Check if a request should be tracked in analytics
+ */
+function shouldTrackAnalytics(url) {
+  const pathname = url.pathname.toLowerCase();
+  const fullPath = pathname + url.search;
+
+  // Check file extension
+  const ext = pathname.substring(pathname.lastIndexOf('.')).toLowerCase();
+  if (ext && IGNORED_EXTENSIONS.has(ext)) {
+    return false;
+  }
+
+  // Check excluded paths
+  if (EXCLUDED_PATHS.some(p => pathname.startsWith(p))) {
+    return false;
+  }
+
+  // Check excluded patterns
+  if (EXCLUDED_PATH_PATTERNS.some(pattern => pattern.test(fullPath))) {
+    return false;
+  }
+
+  return true;
+}
+
 export default {
   async fetch(request, _env, ctx) {
     const url = new URL(request.url);
@@ -95,7 +146,10 @@ export default {
       }
 
       // Track analytics (fire-and-forget, catches LLM bots that don't run JS)
-      ctx.waitUntil(trackAnalytics(request, url));
+      // Skip tracking for static assets, WordPress admin, etc.
+      if (shouldTrackAnalytics(url)) {
+        ctx.waitUntil(trackAnalytics(request, url));
+      }
 
       // Return modified HTML with optimized caching
       const headers = new Headers(originResponse.headers);

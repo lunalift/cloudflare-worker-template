@@ -33,18 +33,28 @@ A Cloudflare Worker template for seamless LunaLift integration on your website. 
 
 3. **Add route to your domain**
 
+   **IMPORTANT**: The route pattern must match your website's exact domain:
+   - If your website is at `yourdomain.com` → use `yourdomain.com/*`
+   - If your website is at `www.yourdomain.com` → use `www.yourdomain.com/*`
+   - For all subdomains → use `*.yourdomain.com/*`
+
    **Option A: Via Cloudflare Dashboard**
    - Go to Workers & Pages > Your Worker > Settings > Triggers
    - Click "Add route"
-   - Enter: `example.com/*` or `*.example.com/*` (for all subdomains)
+   - Enter the pattern that matches your domain (see examples above)
    - Select your zone
    - Save
 
    **Option B: Via CLI**
    ```bash
-   npx wrangler routes create "example.com/*" --zone-name example.com
-   # For multiple subdomains:
-   npx wrangler routes create "*.example.com/*" --zone-name example.com
+   # If your main site is yourdomain.com (apex):
+   npx wrangler routes create "yourdomain.com/*" --zone-name yourdomain.com
+
+   # If your main site is www.yourdomain.com:
+   npx wrangler routes create "www.yourdomain.com/*" --zone-name yourdomain.com
+
+   # For all subdomains (www, blog, shop, etc.):
+   npx wrangler routes create "*.yourdomain.com/*" --zone-name yourdomain.com
    ```
 
 4. **Done!** Your site is now LunaLift-enabled.
@@ -222,7 +232,7 @@ npx wrangler tail --status error
 **Caching Strategy:**
 - HTML cached for 1 hour (fast edge delivery)
 - Stale content served for 24 hours with background refresh
-- Analytics tracked on EVERY request (even cache hits)
+- Analytics tracked every request (even cache hits)
 
 **Latency:**
 - **Static files** (llms.txt, .md): ~5-10ms (pass-through to LunaLift CDN)
@@ -240,4 +250,4 @@ Total overhead: **~10-20ms** first request, **~1ms** cached requests
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details
+Free to use for LunaLift integrations - see [LICENSE](LICENSE) for details
