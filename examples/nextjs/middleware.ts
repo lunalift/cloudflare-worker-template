@@ -14,6 +14,31 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+// Extensions to ignore for analytics tracking (using Set for O(1) lookup)
+const IGNORED_EXTENSIONS = new Set([
+  '.js', '.css', '.xml', '.png', '.jpg', '.jpeg', '.gif', '.pdf',
+  '.doc', '.ico', '.rss', '.zip', '.mp3', '.rar', '.exe', '.wmv',
+  '.avi', '.ppt', '.mpg', '.mpeg', '.tif', '.wav', '.mov', '.psd',
+  '.ai', '.xls', '.mp4', '.m4a', '.swf', '.dat', '.dmg', '.iso',
+  '.flv', '.m4v', '.torrent', '.woff', '.woff2', '.ttf', '.svg',
+  '.webmanifest', '.webp', '.avif'
+]);
+
+/**
+ * Check if a request should be tracked in analytics
+ */
+function shouldTrackAnalytics(url: URL): boolean {
+  const pathname = url.pathname.toLowerCase();
+
+  // Check file extension
+  const ext = pathname.substring(pathname.lastIndexOf('.')).toLowerCase();
+  if (ext && IGNORED_EXTENSIONS.has(ext)) {
+    return false;
+  }
+
+  return true;
+}
+
 export async function middleware(request: NextRequest) {
   const url = new URL(request.url);
   const path = url.pathname;
@@ -46,7 +71,10 @@ export async function middleware(request: NextRequest) {
     const response = NextResponse.next();
 
     // Track analytics (fire-and-forget)
-    trackAnalytics(request, url);
+    // Skip tracking for static assets
+    if (shouldTrackAnalytics(url)) {
+      trackAnalytics(request, url);
+    }
 
     // Let Next.js handle the response, we'll transform it
     const htmlResponse = await fetch(request.url, {

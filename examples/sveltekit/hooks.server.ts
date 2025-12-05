@@ -13,6 +13,31 @@
 
 import type { Handle } from '@sveltejs/kit';
 
+// Extensions to ignore for analytics tracking (using Set for O(1) lookup)
+const IGNORED_EXTENSIONS = new Set([
+  '.js', '.css', '.xml', '.png', '.jpg', '.jpeg', '.gif', '.pdf',
+  '.doc', '.ico', '.rss', '.zip', '.mp3', '.rar', '.exe', '.wmv',
+  '.avi', '.ppt', '.mpg', '.mpeg', '.tif', '.wav', '.mov', '.psd',
+  '.ai', '.xls', '.mp4', '.m4a', '.swf', '.dat', '.dmg', '.iso',
+  '.flv', '.m4v', '.torrent', '.woff', '.woff2', '.ttf', '.svg',
+  '.webmanifest', '.webp', '.avif'
+]);
+
+/**
+ * Check if a request should be tracked in analytics
+ */
+function shouldTrackAnalytics(url: URL): boolean {
+  const pathname = url.pathname.toLowerCase();
+
+  // Check file extension
+  const ext = pathname.substring(pathname.lastIndexOf('.')).toLowerCase();
+  if (ext && IGNORED_EXTENSIONS.has(ext)) {
+    return false;
+  }
+
+  return true;
+}
+
 export const handle: Handle = async ({ event, resolve }) => {
   const url = new URL(event.request.url);
   const path = url.pathname;
@@ -49,7 +74,10 @@ export const handle: Handle = async ({ event, resolve }) => {
     });
 
     // Track analytics (fire-and-forget)
-    trackAnalytics(event, url);
+    // Skip tracking for static assets
+    if (shouldTrackAnalytics(url)) {
+      trackAnalytics(event, url);
+    }
 
     return response;
 
